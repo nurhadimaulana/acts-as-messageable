@@ -12,6 +12,10 @@ module ActsAsMessageable
       def initialize_scopes
         scope :are_from,          lambda { |*args| where(:sent_messageable_id => args.first, :sent_messageable_type => args.first.class.name) }
         scope :are_to,            lambda { |*args| where(:received_messageable_id => args.first, :received_messageable_type => args.first.class.name) }
+        #
+        # renaming scope :search to :search messages
+        # in case to avoid this issue : "ArgumentError: You tried to define a scope named "search" on the model "ActsAsMessageable::Message", but Active Record already defined a class method with the same name."
+        #
         scope :search_messages,   lambda { |*args|  where("body like :search_txt or topic like :search_txt",:search_txt => "%#{args.first}%")}
         scope :connected_with,    lambda { |*args|  where("(sent_messageable_type = :sent_type and
                                                   sent_messageable_id = :sent_id and
